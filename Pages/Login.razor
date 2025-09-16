@@ -1,0 +1,22 @@
+@page "/login"
+@inject SupaClient Supa
+@inject AppState State
+
+<h3>Login</h3>
+<input @bind="email" placeholder="email" />
+<input @bind="password" type="password" placeholder="password" />
+<button @onclick="DoLogin">Login</button>
+<p>@msg</p>
+
+@code {
+    string email="", password="", msg="";
+    async Task DoLogin() {
+        try {
+            var r = await Supa.Login(email, password);
+            if (r?.AccessToken != null) {
+                State.CurrentUserId = Jwt.GetUserIdFromToken(r.AccessToken);
+                msg = $"Ulogovan: {r.User?.Email} ({State.CurrentUserId})";
+            }
+        } catch(Exception ex){ msg = ex.Message; }
+    }
+}

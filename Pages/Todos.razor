@@ -1,0 +1,64 @@
+@page "/todos"
+@inject SupaClient Supa
+@inject AppState State
+
+<h3>Todos</h3>
+<input @bind="newTitle" placeholder="New todo" />
+<button @onclick="Add">Add</button>
+
+<ul>
+@foreach (var t in items)
+{
+  <li>
+    <input type="checkbox"
+           checked="@t.is_done"
+           @onchange="(e => Toggle(t, (bool?)e.Value == true))" />
+    @t.title
+    <button @onclick="(() => Delete(t))">X</button>
+  </li>
+}
+</ul>
+
+<p>@message</p>
+
+@code {
+  List<Todo> items = new();
+  string newTitle = string.Empty;
+  string message = string.Empty;
+
+  protected override async Task OnInitializedAsync() => await Load();
+
+  async Task Load() {
+    try { items = await Supa.GetTodos(); }
+    catch (Exception ex) { message = ex.Message; }
+  }
+
+  async Task Add() {
+    if (string.IsNullOrWhiteSpace(newTitle)) return;
+    var uid = State.CurrentUserId ?? Guid.Empty;
+    if (uid == Guid.Empty) { message = "Uloguj se prvo na /login."; return; }
+
+    try {
+      var created = await Supa.AddTodo(newTitle, uid);
+      if (created != null) items.Insert(0, created);
+      newTitle = string.Empty;
+    } catch (Exception ex) { message = ex.Message; }
+  }
+
+  async Task Toggle(Todo t, bool val) {
+    try {
+      var updated = await Supa.ToggleTodo(t.id, val);
+      if (updated != null) {
+        var idx = items.FindIndex(x => x.id == t.id);
+        if (idx >= 0) items[idx] = updated;
+      }
+    } catch (Exception ex) { message = ex.Message; }
+  }
+
+  async Task Delete(Todo t) {
+    try {
+      await Supa.DeleteTodo(t.id);
+      items.RemoveAll(x => x.id == t.id);
+    } catch (Exception ex) { message = ex.Message; }
+  }
+}

@@ -1,0 +1,16 @@
+@page "/register"
+@inject SupaClient Supa
+
+<h3>Register</h3>
+<input @bind="email" placeholder="email" />
+<input @bind="password" type="password" placeholder="password" />
+<button @onclick="DoRegister">Create</button>
+<p>@msg</p>
+
+@code {
+    string email="", password="", msg="";
+    async Task DoRegister() {
+        try { var r = await Supa.Register(email, password); msg = r?.User!=null ? "Check email" : "Sent"; }
+        catch(Exception ex){ msg = ex.Message; }
+    }
+}
