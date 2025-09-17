@@ -1,0 +1,6 @@
+/* Scoped CSS – važi samo za MainLayout */
+.page[b-zlg9wpmywe] { display: flex; }
+.sidebar[b-zlg9wpmywe] { width: 220px; background: #2d3436; color: #fff; min-height: 100vh; }
+.sidebar a[b-zlg9wpmywe] { color: #dcdde1; text-decoration: none; display: block; padding: 10px; border-radius: 6px; }
+.sidebar a.active[b-zlg9wpmywe], .sidebar a:hover[b-zlg9wpmywe] { background: #0984e3; color: #fff; }
+main[b-zlg9wpmywe] { padding: 20px; background: #f5f6fa; width: 100%; }

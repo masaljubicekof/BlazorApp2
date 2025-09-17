@@ -1,10 +1,10 @@
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace BlazorSupabase.App
 {
-    using System.Net.Http.Headers;
-    using System.Net.Http.Json;
-    using System.Text.Json;
-    using System.Text.Json.Serialization;
-
     public class SupaClient
     {
         private readonly string _url;
@@ -19,6 +19,7 @@ namespace BlazorSupabase.App
             _http = new HttpClient();
         }
 
+        // ============ AUTH ============
         public async Task<AuthResponse?> Register(string email, string password)
         {
             var req = new HttpRequestMessage(HttpMethod.Post, $"{_url}/auth/v1/signup");
@@ -43,15 +44,16 @@ namespace BlazorSupabase.App
 
         public string? AccessToken => _accessToken;
 
-        private HttpRequestMessage Rest(HttpMethod m, string path)
+        private HttpRequestMessage Rest(HttpMethod method, string path)
         {
-            var req = new HttpRequestMessage(m, $"{_url}/rest/v1/{path}");
+            var req = new HttpRequestMessage(method, $"{_url}/rest/v1/{path}");
             req.Headers.Add("apikey", _anon);
             if (!string.IsNullOrEmpty(_accessToken))
                 req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
             return req;
         }
 
+        // ============ TODOS ============
         public async Task<List<Todo>> GetTodos()
         {
             var res = await _http.SendAsync(Rest(HttpMethod.Get, "todos?select=*&order=inserted_at.desc"));
@@ -85,8 +87,78 @@ namespace BlazorSupabase.App
             var res = await _http.SendAsync(Rest(HttpMethod.Delete, $"todos?id=eq.{id}"));
             res.EnsureSuccessStatusCode();
         }
+
+        // ============ TODOS by PROJECT ============
+        public async Task<List<Todo>> GetTodosByProject(Guid projectId)
+        {
+            var res = await _http.SendAsync(Rest(HttpMethod.Get, $"todos?select=*&project_id=eq.{projectId}&order=inserted_at.desc"));
+            res.EnsureSuccessStatusCode();
+            var json = await res.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<Todo>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
+        }
+
+        public async Task<Todo?> AddTodoToProject(string title, Guid userId, Guid projectId)
+        {
+            var req = Rest(HttpMethod.Post, "todos");
+            req.Headers.Add("Prefer", "return=representation");
+            req.Content = JsonContent.Create(new { title, user_id = userId, project_id = projectId, is_done = false });
+            var res = await _http.SendAsync(req);
+            res.EnsureSuccessStatusCode();
+            return (await res.Content.ReadFromJsonAsync<List<Todo>>())?.FirstOrDefault();
+        }
+
+        // ============ PROJECTS ============
+        public async Task<List<Project>> GetProjects()
+        {
+            var res = await _http.SendAsync(Rest(HttpMethod.Get, "projects?select=*&order=created_at.desc"));
+            res.EnsureSuccessStatusCode();
+            var json = await res.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<Project>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
+        }
+
+        public async Task<Project?> AddProject(string name, Guid userId)
+        {
+            var req = Rest(HttpMethod.Post, "projects");
+            req.Headers.Add("Prefer", "return=representation");
+            req.Content = JsonContent.Create(new { name, user_id = userId });
+            var res = await _http.SendAsync(req);
+            res.EnsureSuccessStatusCode();
+            return (await res.Content.ReadFromJsonAsync<List<Project>>())?.FirstOrDefault();
+        }
+
+        public async Task DeleteProject(Guid id)
+        {
+            var res = await _http.SendAsync(Rest(HttpMethod.Delete, $"projects?id=eq.{id}"));
+            res.EnsureSuccessStatusCode();
+        }
+
+        // ============ NOTES ============
+        public async Task<List<Note>> GetNotes()
+        {
+            var res = await _http.SendAsync(Rest(HttpMethod.Get, "notes?select=*&order=created_at.desc"));
+            res.EnsureSuccessStatusCode();
+            var json = await res.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<Note>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
+        }
+
+        public async Task<Note?> AddNote(string title, string body, Guid userId)
+        {
+            var req = Rest(HttpMethod.Post, "notes");
+            req.Headers.Add("Prefer", "return=representation");
+            req.Content = JsonContent.Create(new { title, body, user_id = userId });
+            var res = await _http.SendAsync(req);
+            res.EnsureSuccessStatusCode();
+            return (await res.Content.ReadFromJsonAsync<List<Note>>())?.FirstOrDefault();
+        }
+
+        public async Task DeleteNote(Guid id)
+        {
+            var res = await _http.SendAsync(Rest(HttpMethod.Delete, $"notes?id=eq.{id}"));
+            res.EnsureSuccessStatusCode();
+        }
     }
 
+    // ===== MODELS =====
     public record AuthResponse(
         [property: JsonPropertyName("access_token")] string? AccessToken,
         [property: JsonPropertyName("user")] SupaUser? User
@@ -104,5 +176,22 @@ namespace BlazorSupabase.App
         public string title { get; set; } = "";
         public bool is_done { get; set; }
         public DateTime inserted_at { get; set; }
+    }
+
+    public class Project
+    {
+        public Guid id { get; set; }
+        public Guid user_id { get; set; }
+        public string name { get; set; } = "";
+        public DateTime created_at { get; set; }
+    }
+
+    public class Note
+    {
+        public Guid id { get; set; }
+        public Guid user_id { get; set; }
+        public string title { get; set; } = "";
+        public string body { get; set; } = "";
+        public DateTime created_at { get; set; }
     }
 }

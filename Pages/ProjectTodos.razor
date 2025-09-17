@@ -1,0 +1,61 @@
+@page "/projects/{Id:guid}"
+@inject SupaClient Supa
+@inject AppState State
+
+<h3>Project Todos</h3>
+
+<input @bind="newTitle" placeholder="New todo in this project" />
+<button @onclick="Add">Add</button>
+
+<ul>
+@foreach (var t in items)
+{
+  <li>
+    <input type="checkbox" checked="@t.is_done" @onchange="(e => Toggle(t, (bool?)e.Value == true))" />
+    @t.title
+    <button @onclick="(()=>Delete(t))">X</button>
+  </li>
+}
+</ul>
+<p>@msg</p>
+
+@code {
+  [Parameter] public Guid Id { get; set; } // projectId
+  List<Todo> items = new();
+  string newTitle = "";
+  string msg = "";
+
+  protected override async Task OnParametersSetAsync() => await Load();
+
+  async Task Load(){
+    try { items = await Supa.GetTodosByProject(Id); }
+    catch(Exception ex){ msg = ex.Message; }
+  }
+
+  async Task Add(){
+    var uid = State.CurrentUserId ?? Guid.Empty; if (uid==Guid.Empty){ msg="Uloguj se."; return; }
+    if (string.IsNullOrWhiteSpace(newTitle)) return;
+    try{
+      var created = await Supa.AddTodoToProject(newTitle, uid, Id);
+      if (created != null) items.Insert(0, created);
+      newTitle="";
+    } catch(Exception ex){ msg = ex.Message; }
+  }
+
+  async Task Toggle(Todo t, bool v){
+    try{
+      var u = await Supa.ToggleTodo(t.id, v);
+      if (u!=null){
+        var i = items.FindIndex(x=>x.id==t.id);
+        if (i>=0) items[i]=u;
+      }
+    } catch(Exception ex){ msg = ex.Message; }
+  }
+
+  async Task Delete(Todo t){
+    try{
+      await Supa.DeleteTodo(t.id);
+      items.RemoveAll(x=>x.id==t.id);
+    } catch(Exception ex){ msg = ex.Message; }
+  }
+}

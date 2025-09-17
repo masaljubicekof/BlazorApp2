@@ -1,17 +1,27 @@
+using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using BlazorSupabase.App;
-using System.Net.Http.Json;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 
-// učitaj wwwroot/appsettings.json
-using var bootHttp = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
-var cfg = await bootHttp.GetFromJsonAsync<AppConfig>("appsettings.json");
+// Bezbedno učitavanje wwwroot/appsettings.json
+AppConfig cfg;
+try
+{
+    using var bootHttp = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+    cfg = await bootHttp.GetFromJsonAsync<AppConfig>("appsettings.json")
+          ?? throw new Exception("Empty appsettings.json");
+}
+catch (Exception ex)
+{
+    Console.Error.WriteLine($"Failed to load appsettings.json: {ex.Message}");
+    // fallback da se app ne sruši – popunićeš URL/Key pa restartovati
+    cfg = new AppConfig(new SupabaseConfig("", ""));
+}
 
-// HttpClient za API pozive + naši servisi
 builder.Services.AddScoped(_ => new HttpClient());
-builder.Services.AddScoped(sp => new SupaClient(cfg!));
+builder.Services.AddScoped(sp => new SupaClient(cfg));
 builder.Services.AddScoped<AppState>();
 
 await builder.Build().RunAsync();

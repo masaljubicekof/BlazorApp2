@@ -1,0 +1,54 @@
+@page "/notes"
+@inject SupaClient Supa
+@inject AppState State
+
+<h3>Notes</h3>
+
+<input @bind="title" placeholder="Title" />
+<br />
+<textarea @bind="body" placeholder="Body"></textarea>
+<br />
+<button @onclick="Add">Add</button>
+
+<ul>
+@foreach (var n in items)
+{
+  <li>
+    <b>@n.title</b> — @n.body
+    <button @onclick="(()=>Delete(n))">X</button>
+  </li>
+}
+</ul>
+
+<p>@msg</p>
+
+@code {
+  List<Note> items = new();
+  string title = "";
+  string body = "";
+  string msg = "";
+
+  protected override async Task OnInitializedAsync() => await Load();
+
+  async Task Load(){
+    try { items = await Supa.GetNotes(); }
+    catch(Exception ex){ msg = ex.Message; }
+  }
+
+  async Task Add(){
+    var uid = State.CurrentUserId ?? Guid.Empty; if (uid==Guid.Empty){ msg="Uloguj se."; return; }
+    if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(body)) return;
+    try{
+      var n = await Supa.AddNote(title, body, uid);
+      if (n!=null) items.Insert(0, n);
+      title=""; body="";
+    } catch(Exception ex){ msg = ex.Message; }
+  }
+
+  async Task Delete(Note n){
+    try{
+      await Supa.DeleteNote(n.id);
+      items.RemoveAll(x=>x.id==n.id);
+    } catch(Exception ex){ msg = ex.Message; }
+  }
+}

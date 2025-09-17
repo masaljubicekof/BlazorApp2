@@ -1,0 +1,50 @@
+@page "/projects"
+@inject SupaClient Supa
+@inject AppState State
+
+<h3>Projects</h3>
+
+<input @bind="newName" placeholder="New project" />
+<button @onclick="Add">Add</button>
+
+<ul>
+@foreach (var p in items)
+{
+  <li>
+    <a href="@($"/projects/{p.id}")">@p.name</a>
+    <button @onclick="(()=> Delete(p))">X</button>
+  </li>
+}
+</ul>
+
+<p>@msg</p>
+
+@code {
+  List<Project> items = new();
+  string newName = "";
+  string msg = "";
+
+  protected override async Task OnInitializedAsync() => await Load();
+
+  async Task Load(){
+    try { items = await Supa.GetProjects(); }
+    catch(Exception ex){ msg = ex.Message; }
+  }
+
+  async Task Add(){
+    var uid = State.CurrentUserId ?? Guid.Empty; if (uid==Guid.Empty){ msg="Uloguj se."; return; }
+    if (string.IsNullOrWhiteSpace(newName)) return;
+    try{
+      var p = await Supa.AddProject(newName, uid);
+      if (p!=null) items.Insert(0, p);
+      newName="";
+    } catch(Exception ex){ msg = ex.Message; }
+  }
+
+  async Task Delete(Project p){
+    try{
+      await Supa.DeleteProject(p.id);
+      items.RemoveAll(x=>x.id==p.id);
+    } catch(Exception ex){ msg = ex.Message; }
+  }
+}

@@ -40,6 +40,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/masa0/OneDrive/Documents/Projekti/BlazorSupabase/BlazorSupabase.App/Pages/Notes.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm90ZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/masa0/OneDrive/Documents/Projekti/BlazorSupabase/BlazorSupabase.App/Pages/Projects.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvamVjdHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/masa0/OneDrive/Documents/Projekti/BlazorSupabase/BlazorSupabase.App/Pages/ProjectTodos.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvamVjdFRvZG9zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/masa0/OneDrive/Documents/Projekti/BlazorSupabase/BlazorSupabase.App/Pages/Register.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0ZXIucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -52,10 +64,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2VhdGhlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/masa0/OneDrive/Documents/Projekti/BlazorSupabase/BlazorSupabase.App/Shared/MainLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/masa0/OneDrive/Documents/Projekti/BlazorSupabase/BlazorSupabase.App/Shared/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -63,3 +71,7 @@ build_metadata.AdditionalFiles.CssScope =
 [C:/Users/masa0/OneDrive/Documents/Projekti/BlazorSupabase/BlazorSupabase.App/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/masa0/OneDrive/Documents/Projekti/BlazorSupabase/BlazorSupabase.App/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-zlg9wpmywe

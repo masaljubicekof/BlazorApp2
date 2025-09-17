@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\_framework\\blazor.webassembly.js"
     },
     {
+      "Id": "C:\\Users\\masa0\\OneDrive\\Documents\\Projekti\\BlazorSupabase\\BlazorSupabase.App\\obj\\Debug\\net9.0\\scopedcss\\bundle\\BlazorSupabase.App.styles.css",
+      "PackagePath": "staticwebassets\\BlazorSupabase.App.styles.css"
+    },
+    {
       "Id": "C:\\Users\\masa0\\OneDrive\\Documents\\Projekti\\BlazorSupabase\\BlazorSupabase.App\\wwwroot\\appsettings.json",
       "PackagePath": "staticwebassets\\appsettings.json"
     },
