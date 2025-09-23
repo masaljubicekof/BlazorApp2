@@ -4,51 +4,112 @@
 
 <h3>Notes</h3>
 
-<input @bind="title" placeholder="Title" />
-<br />
-<textarea @bind="body" placeholder="Body"></textarea>
-<br />
-<button @onclick="Add">Add</button>
+<!-- FILTER: izbor projekta (prazno = sve beleške) -->
+<div class="mb-3">
+  <label class="form-label">Project</label>
+<select class="form-select"
+        @bind="SelectedProjectIdStr"
+        @bind:after="OnProjectChanged">
+  <option value="">(All projects)</option>
+  @foreach (var p in projects)
+  {
+    <option value="@p.id.ToString()">@p.name</option>
+  }
+</select>
 
-<ul>
-@foreach (var n in items)
-{
-  <li>
-    <b>@n.title</b> — @n.body
-    <button @onclick="(()=>Delete(n))">X</button>
-  </li>
-}
+</div>
+
+<!-- UNOS NOVE BELEŠKE -->
+<div class="mb-3">
+  <input class="form-control" placeholder="Title" @bind="title" />
+</div>
+<div class="mb-3">
+  <textarea class="form-control" placeholder="Body" @bind="body"></textarea>
+</div>
+<button class="btn btn-primary" @onclick="Add">Add</button>
+
+<p class="mt-2 text-muted">@msg</p>
+
+<!-- LISTA BELEŠKI -->
+<ul class="mt-4">
+  @foreach (var n in items)
+  {
+    <li class="mb-1">
+      <b>@n.title</b> — @n.body
+      <button class="btn btn-sm btn-link text-danger" @onclick="(() => Delete(n))">x</button>
+    </li>
+  }
 </ul>
 
-<p>@msg</p>
-
 @code {
-  List<Note> items = new();
+  // UI state
+  List<Project> projects = new();
+  List<Note>    items    = new();
+
   string title = "";
-  string body = "";
-  string msg = "";
+  string body  = "";
+  string msg   = "";
 
-  protected override async Task OnInitializedAsync() => await Load();
+  // čuvamo izbor kao string (select radi sa string vrednostima)
+  string SelectedProjectIdStr = "";
 
-  async Task Load(){
-    try { items = await Supa.GetNotes(); }
-    catch(Exception ex){ msg = ex.Message; }
+  // a kada treba Guid?, parsiramo iz string-a
+  Guid? SelectedProjectId =>
+      Guid.TryParse(SelectedProjectIdStr, out var g) ? g : (Guid?)null;
+
+  protected override async Task OnInitializedAsync()
+  {
+    projects = await Supa.GetProjects(); // 1) dropdown
+    await ReloadNotes();                 // 2) liste beleški
   }
 
-  async Task Add(){
-    var uid = State.CurrentUserId ?? Guid.Empty; if (uid==Guid.Empty){ msg="Uloguj se."; return; }
-    if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(body)) return;
-    try{
-      var n = await Supa.AddNote(title, body, uid);
-      if (n!=null) items.Insert(0, n);
-      title=""; body="";
-    } catch(Exception ex){ msg = ex.Message; }
+  async Task OnProjectChanged()
+  {
+    await ReloadNotes();
   }
 
-  async Task Delete(Note n){
-    try{
+  async Task ReloadNotes()
+  {
+    try
+    {
+      items = await Supa.GetNotes(SelectedProjectId);
+      msg   = $"Loaded {items.Count} note(s).";
+    }
+    catch (Exception ex) { msg = ex.Message; }
+  }
+
+  async Task Add()
+  {
+    try
+    {
+      if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(body))
+      {
+        msg = "Enter title or body."; return;
+      }
+
+      Guid uid = State.CurrentUserId ?? Guid.Empty;
+      if (uid == Guid.Empty) { msg = "Uloguj se prvo na /login."; return; }
+
+      // ⬇️ ovde šaljemo Guid? (SelectedProjectId) – može i null za “All”
+      var created = await Supa.AddNote(title, body, SelectedProjectId, uid);
+
+      if (created != null)
+      {
+        await ReloadNotes();
+        title = ""; body = ""; msg = "Note added.";
+      }
+      else msg = "Nothing created (check RLS / payload).";
+    }
+    catch (Exception ex) { msg = ex.Message; }
+  }
+
+  async Task Delete(Note n)
+  {
+    try
+    {
       await Supa.DeleteNote(n.id);
-      items.RemoveAll(x=>x.id==n.id);
-    } catch(Exception ex){ msg = ex.Message; }
+      items.RemoveAll(x => x.id == n.id);
+    }
+    catch (Exception ex) { msg = ex.Message; }
   }
 }

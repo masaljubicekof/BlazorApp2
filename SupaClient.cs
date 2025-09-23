@@ -132,24 +132,42 @@ namespace BlazorSupabase.App
             res.EnsureSuccessStatusCode();
         }
 
-        // ============ NOTES ============
-        public async Task<List<Note>> GetNotes()
-        {
-            var res = await _http.SendAsync(Rest(HttpMethod.Get, "notes?select=*&order=created_at.desc"));
-            res.EnsureSuccessStatusCode();
-            var json = await res.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<Note>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
-        }
+      // ============ NOTES ============
+public async Task<List<Note>> GetNotes(Guid? projectId = null)
+{
+    // Ako je prosleđen projectId → filtrira po projektu, inače vraća sve
+    var path = projectId is null
+        ? "notes?order=created_at.desc"
+        : $"notes?project_id=eq.{projectId}&order=created_at.desc";
 
-        public async Task<Note?> AddNote(string title, string body, Guid userId)
-        {
-            var req = Rest(HttpMethod.Post, "notes");
-            req.Headers.Add("Prefer", "return=representation");
-            req.Content = JsonContent.Create(new { title, body, user_id = userId });
-            var res = await _http.SendAsync(req);
-            res.EnsureSuccessStatusCode();
-            return (await res.Content.ReadFromJsonAsync<List<Note>>())?.FirstOrDefault();
-        }
+    var req = Rest(HttpMethod.Get, path);
+    var res = await _http.SendAsync(req);
+    res.EnsureSuccessStatusCode();
+    var json = await res.Content.ReadAsStringAsync();
+
+    return JsonSerializer.Deserialize<List<Note>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
+}
+
+public async Task<Note?> AddNote(string title, string body, Guid? projectId, Guid userId)
+{
+    var req = Rest(HttpMethod.Post, "notes");
+    req.Headers.Add("Prefer", "return=representation");
+    req.Content = JsonContent.Create(new
+    {
+        title,
+        body,
+        user_id = userId,
+        project_id = projectId
+    });
+
+    var res = await _http.SendAsync(req);
+    res.EnsureSuccessStatusCode();
+
+    var created = await res.Content.ReadFromJsonAsync<List<Note>>();
+    return created?.FirstOrDefault();
+}
+
+
 
         public async Task DeleteNote(Guid id)
         {
@@ -193,5 +211,6 @@ namespace BlazorSupabase.App
         public string title { get; set; } = "";
         public string body { get; set; } = "";
         public DateTime created_at { get; set; }
+        public Guid project_id { get; set; }
     }
 }
