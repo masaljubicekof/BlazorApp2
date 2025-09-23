@@ -26,20 +26,31 @@
 <div class="mb-3">
   <textarea class="form-control" placeholder="Body" @bind="body"></textarea>
 </div>
-<button class="btn btn-primary" @onclick="Add">Add</button>
+<button class="btn btn-success" @onclick="Add">Add</button>
 
-<p class="mt-2 text-muted">@msg</p>
+@if (!string.IsNullOrWhiteSpace(msg))
+{
+    <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        @msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 
 <!-- LISTA BELEŠKI -->
-<ul class="mt-4">
-  @foreach (var n in items)
-  {
-    <li class="mb-1">
-      <b>@n.title</b> — @n.body
-      <button class="btn btn-sm btn-link text-danger" @onclick="(() => Delete(n))">x</button>
-    </li>
-  }
-</ul>
+<!-- LISTA BELEŠKI -->
+<div class="mt-4">
+    @foreach (var n in items)
+    {
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">@n.title</h5>
+                <p class="card-text">@n.body</p>
+                <button class="btn btn-sm btn-warning" @onclick="() => Delete(n)">Delete</button>
+            </div>
+        </div>
+    }
+</div>
 
 @code {
   // UI state

@@ -3,62 +3,99 @@
 @inject AppState State
 
 <h3>Todos</h3>
-<input @bind="newTitle" placeholder="New todo" />
-<button @onclick="Add">Add</button>
 
-<ul>
-@foreach (var t in items)
-{
-  <li>
-    <input type="checkbox"
-           checked="@t.is_done"
-           @onchange="(e => Toggle(t, (bool?)e.Value == true))" />
-    @t.title
-    <button @onclick="(() => Delete(t))">X</button>
-  </li>
-}
+<div class="input-group mb-3">
+    <input class="form-control" @bind="newTitle" placeholder="New todo" />
+    <button class="btn btn-success" @onclick="Add">Add</button>
+</div>
+
+<ul class="list-group">
+    @foreach (var t in items)
+    {
+        <li class="list-group-item d-flex align-items-center justify-content-between">
+            <div class="form-check">
+                <input class="form-check-input me-2"
+                       type="checkbox"
+                       checked="@t.is_done"
+                       @onchange="e => Toggle(t, (bool)e.Value)" />
+                <label class="form-check-label">@t.title</label>
+            </div>
+
+            <button class="btn btn-outline-danger btn-sm" @onclick="() => Delete(t)">X</button>
+        </li>
+    }
 </ul>
 
-<p>@message</p>
+@if (!string.IsNullOrWhiteSpace(msg))
+{
+    <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        @msg
+        <button type="button" class="btn-close"
+                @onclick="() => msg = string.Empty"
+                aria-label="Close"></button>
+    </div>
+}
 
 @code {
-  List<Todo> items = new();
-  string newTitle = string.Empty;
-  string message = string.Empty;
+    // UI state
+    List<Todo> items = new();
+    string newTitle = string.Empty;
+    string msg = string.Empty;
 
-  protected override async Task OnInitializedAsync() => await Load();
+    protected override async Task OnInitializedAsync() => await Load();
 
-  async Task Load() {
-    try { items = await Supa.GetTodos(); }
-    catch (Exception ex) { message = ex.Message; }
-  }
+    async Task Load()
+    {
+        try
+        {
+            items = await Supa.GetTodos();
+            msg = $"Loaded {items.Count} todo(s).";
+        }
+        catch (Exception ex) { msg = ex.Message; }
+    }
 
-  async Task Add() {
-    if (string.IsNullOrWhiteSpace(newTitle)) return;
-    var uid = State.CurrentUserId ?? Guid.Empty;
-    if (uid == Guid.Empty) { message = "Uloguj se prvo na /login."; return; }
+    async Task Add()
+    {
+        if (string.IsNullOrWhiteSpace(newTitle)) return;
 
-    try {
-      var created = await Supa.AddTodo(newTitle, uid);
-      if (created != null) items.Insert(0, created);
-      newTitle = string.Empty;
-    } catch (Exception ex) { message = ex.Message; }
-  }
+        var uid = State.CurrentUserId ?? Guid.Empty;
+        if (uid == Guid.Empty) { msg = "Uloguj se prvo na /login."; return; }
 
-  async Task Toggle(Todo t, bool val) {
-    try {
-      var updated = await Supa.ToggleTodo(t.id, val);
-      if (updated != null) {
-        var idx = items.FindIndex(x => x.id == t.id);
-        if (idx >= 0) items[idx] = updated;
-      }
-    } catch (Exception ex) { message = ex.Message; }
-  }
+        try
+        {
+            var created = await Supa.AddTodo(newTitle, uid);
+            if (created != null)
+            {
+                items.Insert(0, created);
+                newTitle = "";
+                msg = "Todo added.";
+            }
+            else msg = "Nothing created (check RLS / payload).";
+        }
+        catch (Exception ex) { msg = ex.Message; }
+    }
 
-  async Task Delete(Todo t) {
-    try {
-      await Supa.DeleteTodo(t.id);
-      items.RemoveAll(x => x.id == t.id);
-    } catch (Exception ex) { message = ex.Message; }
-  }
+    async Task Toggle(Todo t, bool val)
+    {
+        try
+        {
+            var updated = await Supa.ToggleTodo(t.id, val);
+            if (updated != null)
+            {
+                var idx = items.FindIndex(x => x.id == t.id);
+                if (idx >= 0) items[idx] = updated;
+            }
+        }
+        catch (Exception ex) { msg = ex.Message; }
+    }
+
+    async Task Delete(Todo t)
+    {
+        try
+        {
+            await Supa.DeleteTodo(t.id);
+            items.RemoveAll(x => x.id == t.id);
+        }
+        catch (Exception ex) { msg = ex.Message; }
+    }
 }

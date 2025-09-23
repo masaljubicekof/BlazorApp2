@@ -5,7 +5,7 @@
 <h3>Project Todos</h3>
 
 <input @bind="newTitle" placeholder="New todo in this project" />
-<button @onclick="Add">Add</button>
+<button class="btn btn-success" @onclick="Add">Add</button>
 
 <ul>
 @foreach (var t in items)
@@ -17,7 +17,14 @@
   </li>
 }
 </ul>
-<p>@msg</p>
+@if (!string.IsNullOrWhiteSpace(msg))
+{
+    <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        @msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 
 @code {
   [Parameter] public Guid Id { get; set; } // projectId

@@ -2159,10 +2159,10 @@ C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\
 C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\obj\Debug\net9.0\refint\BlazorSupabase.App.dll
 C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\obj\Debug\net9.0\BlazorSupabase.App.pdb
 C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\obj\Debug\net9.0\ref\BlazorSupabase.App.dll
-C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\bin\Debug\net9.0\wwwroot\_framework\BlazorSupabase.App.hb7yh8d0as.pdb
-C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\bin\Debug\net9.0\wwwroot\_framework\BlazorSupabase.App.40eo6gukvd.wasm
-C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\bin\Debug\net9.0\wwwroot\_framework\BlazorSupabase.App.40eo6gukvd.wasm.gz
-C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\bin\Debug\net9.0\wwwroot\_framework\BlazorSupabase.App.hb7yh8d0as.pdb.gz
-C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\obj\Debug\net9.0\compressed\90j3qxswhj-40eo6gukvd.gz
-C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\obj\Debug\net9.0\compressed\nypt72y26s-hb7yh8d0as.gz
-C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\obj\Debug\net9.0\compressed\f9zeszdy81-yl81jq56jd.gz
+C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\bin\Debug\net9.0\wwwroot\_framework\BlazorSupabase.App.8ebnaxtlbr.pdb
+C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\bin\Debug\net9.0\wwwroot\_framework\BlazorSupabase.App.aybludbjjn.wasm
+C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\bin\Debug\net9.0\wwwroot\_framework\BlazorSupabase.App.aybludbjjn.wasm.gz
+C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\bin\Debug\net9.0\wwwroot\_framework\BlazorSupabase.App.8ebnaxtlbr.pdb.gz
+C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\obj\Debug\net9.0\compressed\90j3qxswhj-aybludbjjn.gz
+C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\obj\Debug\net9.0\compressed\nypt72y26s-8ebnaxtlbr.gz
+C:\Users\masa0\source\repos\DSS\ekof-dss-teaching-samples\01-html-css-bootstrap\wwwroot\MyBlzorApp\BlazorApp2\obj\Debug\net9.0\compressed\f9zeszdy81-f8y0kpsorn.gz

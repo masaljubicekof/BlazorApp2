@@ -2,10 +2,24 @@
 @inject SupaClient Supa
 
 <h3>Register</h3>
+
+<div class="mb-3">
 <input @bind="email" placeholder="email" />
+</div>
+
+<div class="mb-3">
 <input @bind="password" type="password" placeholder="password" />
-<button @onclick="DoRegister">Create</button>
-<p>@msg</p>
+</div>
+
+<button class="btn btn-success"@onclick="DoRegister">Create</button>
+@if (!string.IsNullOrWhiteSpace(msg))
+{
+    <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        @msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 
 @code {
     string email="", password="", msg="";

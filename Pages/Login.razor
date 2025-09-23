@@ -3,10 +3,28 @@
 @inject AppState State
 
 <h3>Login</h3>
-<input @bind="email" placeholder="email" />
-<input @bind="password" type="password" placeholder="password" />
-<button @onclick="DoLogin">Login</button>
-<p>@msg</p>
+
+<div class="mb-3">
+    <label class="form-label">Email</label>
+    <input class="form-control" @bind="email" placeholder="Enter email" />
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Password</label>
+    <input class="form-control" @bind="password" type="password" placeholder="Enter password" />
+</div>
+
+<button class="btn btn-success" @onclick="DoLogin">Login</button>
+
+@if (!string.IsNullOrWhiteSpace(msg))
+{
+    <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        @msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
 
 @code {
     string email="", password="", msg="";

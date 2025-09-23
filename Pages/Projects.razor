@@ -4,8 +4,13 @@
 
 <h3>Projects</h3>
 
-<input @bind="newName" placeholder="New project" />
-<button @onclick="Add">Add</button>
+<div class="mb-3">
+    <label class="form-label">New project</label>
+    <input class="form-control" @bind="newName" placeholder="Enter project name" />
+    <small class="form-text text-muted">This will be the name of your project</small>
+</div>
+
+<button class="btn btn-success mb-3" @onclick="Add">Add</button>
 
 <ul>
 @foreach (var p in items)
@@ -17,7 +22,14 @@
 }
 </ul>
 
-<p>@msg</p>
+@if (!string.IsNullOrWhiteSpace(msg))
+{
+    <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        @msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 
 @code {
   List<Project> items = new();
