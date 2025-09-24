@@ -4,3 +4,31 @@
 .sidebar a[b-zlg9wpmywe] { color: #dcdde1; text-decoration: none; display: block; padding: 10px; border-radius: 6px; }
 .sidebar a.active[b-zlg9wpmywe], .sidebar a:hover[b-zlg9wpmywe] { background: #0984e3; color: #fff; }
 main[b-zlg9wpmywe] { padding: 20px; background: #f5f6fa; width: 100%; }
+.sidebar[b-zlg9wpmywe] {
+    background: linear-gradient(180deg, #4e73df, #1cc88a); /* plavo-zelena gradijent */
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
+}
+
+.nav-link[b-zlg9wpmywe] {
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover[b-zlg9wpmywe] {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffd54f; /* zlatno na hover */
+}
+.nav-link.active[b-zlg9wpmywe] {
+    background-color: rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    border-left: 4px solid #ffd54f;
+}
+
+main[b-zlg9wpmywe] {
+    padding: 20px;
+    background: #f9f9fb; /* svetla pozadina */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
